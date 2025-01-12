@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const path = require("path");
 
 dotenv.config();
 
@@ -17,10 +18,13 @@ const config = {
   },
 };
 
-app.get("/", function (req, res) {
-  res.send(
-    "This is the server API page, you may access its services via the client app."
-  );
+// Serve static files from the dist folder
+const distPath = path.join(__dirname, "../../dist");
+app.use(express.static(distPath));
+
+// Route for serving the main HTML file
+app.get("/", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
 // POST Route to analyze the URL
