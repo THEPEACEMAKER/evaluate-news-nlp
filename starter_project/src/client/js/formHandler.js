@@ -1,4 +1,5 @@
 import { checkForURL } from "./urlChecker";
+import { mapPolarity } from "./polarityMapper";
 
 const serverURL = "http://localhost:8000/analyze";
 
@@ -35,18 +36,25 @@ async function handleSubmit(event) {
 
     const data = await response.json();
 
-    // Update the UI with the results
-    updateUI(data);
+    // Process data before updating the UI
+    const processedData = {
+      polarity: mapPolarity(data.polarity),
+      subjectivity: data.subjectivity,
+      textSnippet: data.text,
+    };
+
+    // Update the UI with processed data
+    updateUI(processedData);
   } catch (error) {
     console.error("Error:", error);
     alert("Something went wrong. Please try again later.");
   }
 }
 
-function updateUI(data) {
-  document.getElementById("polarity").textContent = data.polarity;
-  document.getElementById("subjectivity").textContent = data.subjectivity;
-  document.getElementById("textSnippet").textContent = data.text;
+function updateUI({ polarity, subjectivity, textSnippet }) {
+  document.getElementById("polarity").textContent = polarity;
+  document.getElementById("subjectivity").textContent = subjectivity;
+  document.getElementById("textSnippet").textContent = textSnippet;
 }
 
 // Export the handleSubmit function
