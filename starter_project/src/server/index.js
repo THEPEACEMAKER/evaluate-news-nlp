@@ -9,7 +9,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Variables for url and api key
+// NLP API Configuration
+const config = {
+  meaningCloud: {
+    apiKey: process.env.MEANINGCLOUD_API_KEY,
+    apiUrl: "https://api.meaningcloud.com/sentiment-2.1",
+  },
+};
 
 app.get("/", function (req, res) {
   res.send(
@@ -18,8 +24,9 @@ app.get("/", function (req, res) {
 });
 
 // POST Route to analyze the URL
-app.post("/analyze", (req, res) => {
+app.post("/analyze", async (req, res) => {
   const { url } = req.body;
+  //   https://jamesclear.com/five-step-creative-process works fine
 
   if (!url) {
     return res.status(400).json({ error: "URL is required" });
@@ -27,14 +34,43 @@ app.post("/analyze", (req, res) => {
 
   console.log("Received URL for analysis:", url);
 
-  // Mock response
-  const mockResponse = {
-    polarity: "positive",
-    subjectivity: "subjective",
-    text: "This is a sample snippet of the article.",
-  };
+  try {
+    // documentation: https://learn.meaningcloud.com/developer/sentiment-analysis/2.1/dev-tools
+    const formdata = new FormData();
+    formdata.append("key", config.meaningCloud.apiKey);
+    formdata.append("url", url);
+    formdata.append("lang", "en");
+    const response = await fetch(config.meaningCloud.apiUrl, {
+      method: "POST",
+      body: formdata,
+    });
 
-  res.status(200).json(mockResponse);
+    const data = await response.json();
+
+    if (data.status.code !== "0") {
+      return res
+        .status(500)
+        .json({ error: `MeaningCloud API error: ${data.status.msg}` });
+    }
+
+    // the first three sentences
+    const textSnippet =
+      data.sentence_list
+        ?.slice(0, 3)
+        .map((sentence) => sentence.text)
+        .join(" ") || "No text snippet available";
+
+    res.status(200).json({
+      polarity: data.score_tag,
+      subjectivity: data.subjectivity,
+      text: textSnippet,
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while analyzing the URL." });
+  }
 });
 
 // Designates what port the app will listen to for incoming requests
