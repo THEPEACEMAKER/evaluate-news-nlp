@@ -35,12 +35,18 @@ async function handleSubmit(event) {
 
     const data = await response.json();
 
-    console.log("Request was successful! Data received:", data);
     // Update the UI with the results
+    updateUI(data);
   } catch (error) {
     console.error("Error:", error);
     alert("Something went wrong. Please try again later.");
   }
+}
+
+function updateUI(data) {
+  document.getElementById("polarity").textContent = data.polarity;
+  document.getElementById("subjectivity").textContent = data.subjectivity;
+  document.getElementById("textSnippet").textContent = data.text;
 }
 
 // Export the handleSubmit function
