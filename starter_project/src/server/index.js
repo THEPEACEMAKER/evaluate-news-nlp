@@ -17,7 +17,25 @@ app.get("/", function (req, res) {
   );
 });
 
-// POST Route
+// POST Route to analyze the URL
+app.post("/analyze", (req, res) => {
+  const { url } = req.body;
+
+  if (!url) {
+    return res.status(400).json({ error: "URL is required" });
+  }
+
+  console.log("Received URL for analysis:", url);
+
+  // Mock response
+  const mockResponse = {
+    polarity: "positive",
+    subjectivity: "subjective",
+    text: "This is a sample snippet of the article.",
+  };
+
+  res.status(200).json(mockResponse);
+});
 
 // Designates what port the app will listen to for incoming requests
 app.listen(8000, function () {
