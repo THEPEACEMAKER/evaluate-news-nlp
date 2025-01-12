@@ -2,37 +2,40 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Test</title>
+        <title>Article Sentiment Analyzer</title>
     </head>
 
     <body>
 
         <header>
-            <div class="">
-                Logo
-            </div>
-            <div class="">
-                navigation
+            <div>
+                <h1>Article Sentiment Analyzer</h1>
             </div>
         </header>
 
         <main>
             <section>
+                <h2>Analyze an Article</h2>
+                <p>Enter the URL of a blog or news article to analyze its sentiment and subjectivity.</p>
                 <form id="urlForm">
-                    <input id="name" type="text" name="url" placeholder="Enter URL" required>
-                    <button id="submitButton" type="submit">Submit</button>
-                </form>
-                
+                    <label for="url">Article URL:</label>
+                    <input id="url" type="text" url="url" placeholder="Enter the article URL" required>
+                    <button id="submitButton" type="submit">Analyze</button>
+                </form>    
             </section>
 
             <section>
-                <strong>Form Results:</strong>
-                <div id="results"></div>
+                <h2>Analysis Results</h2>
+                <div id="results">
+                    <p><strong>Polarity:</strong> <span id="polarity"></span></p>
+                    <p><strong>Subjectivity:</strong> <span id="subjectivity"></span></p>
+                    <p><strong>Text Snippet:</strong> <span id="textSnippet"></span></p>
+                </div>
             </section>
         </main>
 
         <footer>
-            <p>This is a footer</p>
+            <p>© 2025 Article Sentiment Analyzer, by Adel Abdellatif</p>
         </footer>
 
     </body>
